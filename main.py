@@ -16,17 +16,13 @@ GPIO.setup(DO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 
 def set_wifi(enabled: bool):
-    state = "off" if not enabled else "on"
-    subprocess.run(["sudo", "ifconfig", "wlan0", state])
-    if enabled:
-        time.sleep(5)  # Give WiFi time to reconnect
+    # turn it off/on
+    pass
 
 
 def set_hdmi(enabled: bool):
-    if enabled:
-        subprocess.run(["sudo", "tvservice", "-p"])       # Power on
-    else:
-        subprocess.run(["sudo", "tvservice", "-o"])       # Power off
+    # Turn it off/on
+    pass
 
 
 def low_power_wait(seconds):

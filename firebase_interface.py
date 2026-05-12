@@ -33,7 +33,7 @@ def get_data(key):
 def set_data(key, data):
     if db is None:
         return None
-    db.child(f"{user}").child(f"{key}").set(data)
+    db.child(f"{user}").child("money_tree").child(f"{key}").set(data)
 
 def login(username, password):
     pass

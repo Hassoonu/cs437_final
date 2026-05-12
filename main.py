@@ -61,7 +61,7 @@ def get_sensor_data():
 def main():
     fbi.connect_to_db()
 
-    my_key = "money_tree"
+    my_key = "needs_water"
 
     threading.Thread(target=wait_for_quit, daemon=True).start()
 

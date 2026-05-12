@@ -1,10 +1,4 @@
-import pyrebase
-
-
-# cred_obj = firebase_admin.credentials.Certificate('....path to file')
-# default_app = firebase_admin.initialize_app(cred_object, {
-#     'databaseURL':databaseURL
-#     })
+import pyrebase  # ? install is 'pyrebase4' but import is still 'pyrebase'
 
 firebase_config = {
     'apiKey': "AIzaSyCi_pRHNVqZkbcKZgatNENXsqBufsGnOA0",
@@ -17,50 +11,34 @@ firebase_config = {
 }
 
 firebase = pyrebase.initialize_app(firebase_config)
-db = None
-user = "Hasan"
+auth = firebase.auth()   # ? initialize auth once at the top
+db   = firebase.database()  # ? no need for connect_to_db() or a global
 
-def connect_to_db():
-    global db
-    db = firebase.database()
+current_user = None  # stores the logged-in user token object
+USERNAME = "Hasan"   # rename to avoid shadowing
 
 def get_data(key):
-    if db is None:
-        return None
-    data = db.child(f"{user}").child(f"{key}").get()
-    return data
+    data = db.child(USERNAME).child(key).get()
+    return data.val()   # ? .val() extracts the actual value; without it you get a pyrebase object
 
 def set_data(key, data):
-    if db is None:
-        return None
-    db.child(f"{user}").child("money_tree").child(f"{key}").set(data)
+    db.child(USERNAME).child("money_tree").set(data)
 
-def login(username, password):
-    pass
+def login(email, password):
+    global current_user
+    try:
+        current_user = auth.sign_in_with_email_and_password(email, password)
+        print(f"Logged in as {email}")
+    except Exception as e:
+        print(f"Login failed: {e}")
 
-def create_account():
-    pass
+def create_account(email, password):
+    global current_user
+    try:
+        current_user = auth.create_user_with_email_and_password(email, password)
+        print(f"Account created for {email}")
+    except Exception as e:
+        print(f"Account creation failed: {e}")
 
-def add_plant():
-    pass
-
-
-
-# // Import the functions you need from the SDKs you need
-# import { initializeApp } from "firebase/app";
-# // TODO: Add SDKs for Firebase products that you want to use
-# // https://firebase.google.com/docs/web/setup#available-libraries
-
-# // Your web app's Firebase configuration
-# const firebaseConfig = {
-#   apiKey: "AIzaSyCi_pRHNVqZkbcKZgatNENXsqBufsGnOA0",
-#   authDomain: "final-fe519.firebaseapp.com",
-#   databaseURL: "https://final-fe519-default-rtdb.firebaseio.com",
-#   projectId: "final-fe519",
-#   storageBucket: "final-fe519.firebasestorage.app",
-#   messagingSenderId: "757688929699",
-#   appId: "1:757688929699:web:6a5e2083404b8ac7289e16"
-# };
-
-# // Initialize Firebase
-# const app = initializeApp(firebaseConfig);
+def add_plant(plant_name, plant_data):
+    db.child(USERNAME).child(plant_name).set(plant_data)

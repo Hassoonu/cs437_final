@@ -25,10 +25,14 @@ def connect_to_db():
     db = firebase.database()
 
 def get_data(key):
+    if db is None:
+        return None
     data = db.child(f"{user}").child(f"{key}").get()
     return data
 
 def set_data(key, data):
+    if db is None:
+        return None
     db.child(f"{user}").child(f"{key}").set(data)
 
 def login(username, password):
